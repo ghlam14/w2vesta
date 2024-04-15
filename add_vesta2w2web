@@ -1,0 +1,120 @@
+#!/bin/tcsh -f
+cat<<EOF
+===========================================
+    Download  VESTA
+    install   VESTA
+    Add VESTA to w2web
+
+    version 1.1.0
+============@G.Benabdellah================
+
+EOF
+
+set i=0
+if ( ! -e VESTA-gtk3.tar.bz2 ) then
+download:
+@ i ++
+cat<<EOF
+
+----------------------------------------------------------------------------
+ ...
+ 
+       Please wait ...
+    
+  ...   Download vesta for linux _x64  ....
+
+ from:    https://jp-minerals.org/vesta/archives/3.5.8/VESTA-gtk3.tar.bz2
+
+ ---------------------------------------------------------------------------
+EOF
+
+
+wget https://jp-minerals.org/vesta/archives/3.5.8/VESTA-gtk3.tar.bz2
+
+endif
+if( -e VESTA-gtk3.tar.bz2 ) then
+    set chck=`md5sum VESTA-gtk3.tar.bz2 | awk '{print $1 }'`
+    if ("$chck" == "d13881c3c785b5461bbefa3ba59efd91" ) then
+        tar -xf VESTA-gtk3.tar.bz2
+        cd VESTA-gtk3/
+        cp VESTA vesta
+        chmod +x VESTA
+        chmod +x vesta
+    else
+     rm VESTA-gtk3.tar.bz2
+     if ( "$i" == "3" ) goto errorm
+     goto download
+    endif
+    
+        if( ! -e ~/.bashrc )  goto error
+        if( ! -e ~/.bashrc_vs ) cp ~/.bashrc  ~/.bashrc_vs
+        sed -i "/# add VESTA/,/#END VESTA/d" ~/.bashrc 
+
+cat<<EOF>> ~/.bashrc 
+### add VESTA #
+export PATH=\$PATH:`pwd`
+###END VESTA ##
+EOF
+cd .. 
+
+set tst=`grep WIENROOT  ~/.bashrc`
+
+
+if (  "$#tst" == "0" ) then
+    set WIENROOT
+    echo "Wien2k Path not found"
+    goto errorw
+endif
+ 
+
+cp viewvesta.pl  $WIENROOT/SRC_w2web/htdocs/util/viewvesta.pl
+   chmod +x  $WIENROOT/SRC_w2web/htdocs/util/viewvesta.pl
+
+if ( ! -e $WIENROOT/SRC_w2web/htdocs/navig.vs.pl ) cp $WIENROOT/SRC_w2web/htdocs/navig.pl  $WIENROOT/SRC_w2web/htdocs/navig.sv.pl
+
+sed -i "/viewvesta/d" $WIENROOT/SRC_w2web/htdocs/navig.pl
+
+set SID='$SID'
+set lenvesta="/util/viewvesta.pl?SID=\$SID"
+set pattrn="slideMenu.makeMenu('sub','initialize calc"
+sed -i "/$pattrn/ i\  slideMenu.makeMenu\(\'sub\',\'vesta_view\','$lenvesta',\'main\'\)" $WIENROOT/SRC_w2web/htdocs/navig.pl   
+
+
+cat<<EOF
+   
+   the configuration is done
+   maybe you should kill w2web then run it again : 
+   
+         home@hostname:~\$>  killall w2web
+         home@hostname:~\$>  w2web
+   
+   ...........
+   
+EOF
+
+
+
+exit
+
+error:
+
+echo ""
+echo " This configuration for only linux system with   .bashrc ... exit"
+echo ""
+
+exit
+errorw:
+echo ""
+echo " WIEN2k root not found .... exit .... "
+echo ""
+exit
+errorm:
+cat<<EOF
+
+ the downloaded VESTA file "VESTA-gtk3.tar.bz2" is checked by  md5sum  
+ and it should be done:  d13881c3c785b5461bbefa3ba59efd91
+ 
+ so the file mybe not downloded correctely or there are a new update for the old verion of VESTA
+
+EOF
+
