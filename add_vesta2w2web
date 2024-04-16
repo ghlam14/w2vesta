@@ -54,9 +54,12 @@ cat<<EOF>> ~/.bashrc
 ### add VESTA #
 export PATH=\$PATH:`pwd`
 ###END VESTA ##
-EOF
-cd .. 
+EOF 
+
 endif
+
+cd .. 
+
 
 set tst=`grep WIENROOT  ~/.bashrc`
 
