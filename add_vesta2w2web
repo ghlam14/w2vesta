@@ -40,6 +40,7 @@ if( -e VESTA-gtk3.tar.bz2 ) then
         cp VESTA vesta
         chmod +x VESTA
         chmod +x vesta
+      cd ..
     else
      rm VESTA-gtk3.tar.bz2
      if ( "$i" == "3" ) goto errorm
@@ -54,11 +55,9 @@ cat<<EOF>> ~/.bashrc
 ### add VESTA #
 export PATH=\$PATH:`pwd`
 ###END VESTA ##
-EOF 
+EOF
 
 endif
-
-cd .. 
 
 
 set tst=`grep WIENROOT  ~/.bashrc`
