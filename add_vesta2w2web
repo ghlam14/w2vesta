@@ -33,17 +33,17 @@ wget https://jp-minerals.org/vesta/archives/3.5.8/VESTA-gtk3.tar.bz2
 
 endif
 if( -e VESTA-gtk3.tar.bz2 ) then
-    set chck=`md5sum VESTA-gtk3.tar.bz2 | awk '{print $1 }'`
-    if ("$chck" == "d13881c3c785b5461bbefa3ba59efd91" ) then
+   # set chck=`md5sum VESTA-gtk3.tar.bz2 | awk '{print $1 }'`
+   # if ("$chck" == "d13881c3c785b5461bbefa3ba59efd91" ) then
         tar -xf VESTA-gtk3.tar.bz2
         cd VESTA-gtk3/
         cp VESTA vesta
         chmod +x VESTA
         chmod +x vesta
-    else
-     rm VESTA-gtk3.tar.bz2
-     if ( "$i" == "3" ) goto errorm
-     goto download
+    #else
+    # rm VESTA-gtk3.tar.bz2
+    # if ( "$i" == "3" ) goto errorm
+    # goto download
     endif
     
         if( ! -e ~/.bashrc )  goto error
